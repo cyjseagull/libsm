@@ -25,6 +25,7 @@ use byteorder::{BigEndian, WriteBytesExt};
 pub type Pubkey = Point;
 pub type Seckey = BigUint;
 
+#[derive(Default, Debug, Clone, PartialEq)]
 pub struct Signature {
     r: BigUint,
     s: BigUint,
@@ -35,6 +36,22 @@ impl Signature {
         let r = BigUint::from_bytes_be(r_bytes);
         let s = BigUint::from_bytes_be(s_bytes);
         Signature { r, s }
+    }
+
+    pub fn bytes_encode(&self) -> [u8; 64] {
+        let mut sign_slice = [0u8; 64];
+        sign_slice[32 - self.r.to_bytes_be().len()..32].copy_from_slice(&self.r.to_bytes_be());
+        sign_slice[64 - self.s.to_bytes_be().len()..].copy_from_slice(&self.s.to_bytes_be());
+        sign_slice
+    }
+
+    pub fn bytes_decode(sign: &[u8]) -> Result<Signature, ()> {
+        if sign.len() != 64 {
+            return Err(());
+        }
+        let r = BigUint::from_bytes_be(&sign[0..32]);
+        let s = BigUint::from_bytes_be(&sign[32..64]);
+        Ok(Signature{r, s})
     }
 
     pub fn der_decode(buf: &[u8]) -> Result<Signature, yasna::ASN1Error> {
@@ -350,8 +367,13 @@ mod tests {
         let ctx = SigCtx::new();
         let (pk, sk) = ctx.new_keypair();
         let signature = ctx.sign(msg, &sk, &pk);
+        let sign_bytes = signature.bytes_encode();
+        let signature_rec = Signature::bytes_decode(&sign_bytes).unwrap();
+
+        assert_eq!(signature_rec, signature);
 
         assert!(ctx.verify(msg, &pk, &signature));
+        assert!(ctx.verify(msg, &pk, &signature_rec));
     }
 
     #[test]
