@@ -523,7 +523,15 @@ impl EccCtx {
                 Ok(p) => Ok(p),
                 Err(_) => Err(()),
             }
-        } else {
+        } else if b.len() == 64{
+            let x = FieldElem::from_bytes(&b[0..32]);
+            let y = FieldElem::from_bytes(&b[32..64]);
+            match self.new_point(&x, &y) {
+                Ok(p) => Ok(p),
+                Err(_) => Err(()),
+            }
+        }
+        else{
             Err(())
         }
     }
