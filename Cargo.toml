@@ -1,6 +1,6 @@
 [package]
 name = "wedpr_l_libsm"
-version = "0.3.1"
+version = "0.3.2"
 authors = [
     "Tang Zongxun <tangzongxun@hotmail.com>",
     "Niu Junxiang <494521900@qq.com>",
