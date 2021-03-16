@@ -65,6 +65,7 @@ impl Signature {
         Ok(Signature { r, s })
     }
 
+    #[allow(clippy::result_unit_err)]
     pub fn der_decode_raw(buf: &[u8]) -> Result<Signature, ()> {
         if buf[0] != 0x02 {
             return Err(());
@@ -320,6 +321,7 @@ impl SigCtx {
         curve.mul(&sk, &curve.generator())
     }
 
+    #[allow(clippy::result_unit_err)]
     pub fn load_pubkey(&self, buf: &[u8]) -> Result<Point, ()> {
         self.curve.bytes_to_point(buf)
     }
@@ -328,6 +330,7 @@ impl SigCtx {
         self.curve.point_to_bytes(p, compress)
     }
 
+    #[allow(clippy::result_unit_err)]
     pub fn load_seckey(&self, buf: &[u8]) -> Result<BigUint, ()> {
         if buf.len() != 32 {
             return Err(());
