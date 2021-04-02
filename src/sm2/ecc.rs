@@ -28,7 +28,7 @@ pub struct EccCtx {
     inv2: FieldElem,
 }
 
-#[derive(Clone)]
+#[derive(Default, Clone)]
 pub struct Point {
     pub x: FieldElem,
     pub y: FieldElem,

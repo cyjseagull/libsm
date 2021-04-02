@@ -268,7 +268,7 @@ impl SigCtx {
 
     pub fn verify_raw(&self, digest: &[u8], pk: &Point, sig: &Signature) -> bool {
         if digest.len() != 32 {
-            panic!("the length of digest must be 32-bytes.");
+            return false;
         }
         let e = BigUint::from_bytes_be(digest);
 
@@ -316,7 +316,7 @@ impl SigCtx {
     pub fn pk_from_sk(&self, sk: &BigUint) -> Point {
         let curve = &self.curve;
         if *sk >= *curve.get_n() || *sk == BigUint::zero() {
-            panic!("invalid seckey");
+            return Point::default();
         }
         curve.mul(&sk, &curve.generator())
     }
@@ -345,7 +345,7 @@ impl SigCtx {
 
     pub fn serialize_seckey(&self, x: &BigUint) -> Vec<u8> {
         if *x > *self.curve.get_n() {
-            panic!("invalid secret key");
+            return vec![];
         }
         let x = FieldElem::from_biguint(x);
         x.to_bytes()

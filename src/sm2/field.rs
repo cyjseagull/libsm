@@ -264,7 +264,7 @@ impl Default for FieldCtx {
     }
 }
 
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct FieldElem {
     pub value: [u32; 8],
 }
