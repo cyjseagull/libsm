@@ -448,7 +448,7 @@ impl EccCtx {
     }
 
     pub fn random_uint(&self) -> BigUint {
-        let mut rng = OsRng::new().unwrap();
+        let mut rng = rand::thread_rng();
         let mut buf: [u8; 32] = [0; 32];
 
         let mut ret;
@@ -524,15 +524,14 @@ impl EccCtx {
                 Ok(p) => Ok(p),
                 Err(_) => Err(()),
             }
-        } else if b.len() == 64{
+        } else if b.len() == 64 {
             let x = FieldElem::from_bytes(&b[0..32]);
             let y = FieldElem::from_bytes(&b[32..64]);
             match self.new_point(&x, &y) {
                 Ok(p) => Ok(p),
                 Err(_) => Err(()),
             }
-        }
-        else{
+        } else {
             Err(())
         }
     }
